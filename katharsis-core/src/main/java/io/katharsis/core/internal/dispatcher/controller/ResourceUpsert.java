@@ -36,6 +36,8 @@ public abstract class ResourceUpsert extends BaseController {
     protected final ObjectMapper objectMapper;
 	protected DocumentMapper documentMapper;
 
+	protected boolean ignoreUnknownRelationships = false;
+
     public ResourceUpsert(ResourceRegistry resourceRegistry, TypeParser typeParser, ObjectMapper objectMapper, DocumentMapper documentMapper) {
         this.resourceRegistry = resourceRegistry;
         this.typeParser = typeParser;
@@ -209,23 +211,26 @@ public abstract class ResourceUpsert extends BaseController {
             	String propertyName = property.getKey();
             	Relationship relationship = property.getValue();
             	if(relationship != null){
-	            	
-	            	ResourceInformation resourceInformation = registryEntry.getResourceInformation();
-					ResourceField field = resourceInformation.findRelationshipFieldByName(propertyName);
-					if(field == null){
-						 throw new ResourceException(String.format("Invalid relationship name: %s for %s", property.getKey(), resourceInformation.getResourceType()));
-					}
-	            	if (field.isCollection()){
-	                    //noinspection unchecked
-	                    setRelationsField(newResource,
-	                            registryEntry,
-	                            property,
-	                            queryAdapter,
-	                            parameterProvider);
-	                } else {
-	                    //noinspection unchecked
-	                    setRelationField(newResource, registryEntry, propertyName, relationship, queryAdapter, parameterProvider);
-	                }
+
+                    ResourceInformation resourceInformation = registryEntry.getResourceInformation();
+                    ResourceField field = resourceInformation.findRelationshipFieldByName(propertyName);
+                    if(!ignoreUnknownRelationships && field == null){
+                        throw new ResourceException(String.format("Invalid relationship name: %s for %s", property.getKey(), resourceInformation.getResourceType()));
+                    }
+                    if(field != null) {
+
+                        if (field.isCollection()){
+                            //noinspection unchecked
+                            setRelationsField(newResource,
+                                registryEntry,
+                                property,
+                                queryAdapter,
+                                parameterProvider);
+                        } else {
+                            //noinspection unchecked
+                            setRelationField(newResource, registryEntry, propertyName, relationship, queryAdapter, parameterProvider);
+                        }
+                    }
             	}
             }
         }

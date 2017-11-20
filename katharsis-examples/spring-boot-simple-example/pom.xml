@@ -4,7 +4,7 @@
 
 	<groupId>io.katharsis</groupId>
 	<artifactId>spring-boot-simple-example</artifactId>
-	<version>3.0.2.CROPSTER</version>
+	<version>3.0.3.CROPSTER</version>
 	<packaging>jar</packaging>
 
 	<name>Spring Boot Simple Example</name>

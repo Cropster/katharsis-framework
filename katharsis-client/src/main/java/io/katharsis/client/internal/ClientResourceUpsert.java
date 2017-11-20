@@ -41,6 +41,7 @@ class ClientResourceUpsert extends ResourceUpsert {
 	public ClientResourceUpsert(ResourceRegistry resourceRegistry, TypeParser typeParser, ObjectMapper objectMapper, DocumentMapper documentMapper, ClientProxyFactory proxyFactory) {
 		super(resourceRegistry, typeParser, objectMapper, documentMapper);
 		this.proxyFactory = proxyFactory;
+		this.ignoreUnknownRelationships = true;
 	}
 
 	public String getUID(ResourceIdentifier id) {
